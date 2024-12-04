@@ -2,25 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/home_screen/home_screen.dart';
 import 'package:movie_app/splash/splash_screen.dart';
 import 'package:movie_app/tabs/main_page/main_page.dart';
-import 'package:movie_app/tabs/main_page/movie_detail.dart';
+import 'package:movie_app/tabs/main_page/movie_details_screen.dart';
 
-void main()
-{
-  runApp(MyApp());
+void main() {
+  runApp(const MyApp());
 }
-class MyApp extends StatelessWidget
-{
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      routes:{
-        SplashScreen.routeName : (_)=> SplashScreen(),
-        HomeScreen.routeName : (_)=> HomeScreen(),
-        MainPageTab.routeName : (_)=> MainPageTab(),
-        MovieDetailsTab.routeName : (_)=> MovieDetailsTab(),
+      routes: {
+        SplashScreen.routeName: (_) => const SplashScreen(),
+        HomeScreen.routeName: (_) => const HomeScreen(),
+        MainPageTab.routeName: (_) => const MainPageTab(),
+       MovieDetailsScreen.routeName:(_)=>const MovieDetailsScreen()
       },
-      initialRoute: HomeScreen.routeName,
+      
     );
   }
 }

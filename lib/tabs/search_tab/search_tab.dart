@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SearchTab extends StatefulWidget {
+  const SearchTab({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SearchTabState createState() => _SearchTabState();
 }
 
@@ -24,22 +27,22 @@ class _SearchTabState extends State<SearchTab> {
             },
             decoration: InputDecoration(
               hintText: 'Search',
-              hintStyle: TextStyle(color: Colors.white70),
+              hintStyle:const TextStyle(color: Colors.white70),
               filled: true,
               fillColor: Colors.grey[800],
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide.none,
               ),
-              prefixIcon: Icon(Icons.search, color: Colors.white),
+              prefixIcon: const Icon(Icons.search, color: Colors.white),
             ),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
         // Search Results
         Expanded(
           child: searchResults.isEmpty
-              ? Center(
+              ? const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -53,8 +56,8 @@ class _SearchTabState extends State<SearchTab> {
             ),
           )
               : GridView.builder(
-            padding: EdgeInsets.all(16),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
@@ -78,12 +81,12 @@ class _SearchTabState extends State<SearchTab> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
                         searchResults[index],
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
