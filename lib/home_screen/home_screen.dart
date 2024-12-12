@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/tabs/browse_tab/browse_tab.dart';
-import 'package:movie_app/tabs/main_page/main_page.dart';
-import 'package:movie_app/tabs/search_tab/search_tab.dart';
-import 'package:movie_app/tabs/watchlist_tab/watchlist_tab.dart';
+
+import 'package:movie_app/movies/model_view/popular_movies_model.dart';
+import 'package:movie_app/movies/veiw/tabs/browse_tab/browse_tab.dart';
+import 'package:movie_app/movies/veiw/tabs/main_page/main_page.dart';
+import 'package:movie_app/movies/veiw/tabs/search_tab/search_tab.dart';
+import 'package:movie_app/movies/veiw/tabs/watchlist_tab/watchlist_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName ='homeScreen';
 
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, });
+   
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+  
 }
 
 class _HomeScreenState extends State<HomeScreen> {
 
   int currentIndex = 0 ;
   List<Widget> tabs = [
-   const MainPageTab(),
+    const MainPageTab(),
    const SearchTab(),
     BrowseTab(),
   const  WatchlistTab(),

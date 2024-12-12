@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/home_screen/home_screen.dart';
+import 'package:movie_app/movies/veiw/tabs/main_page/main_page.dart';
 import 'package:movie_app/splash/splash_screen.dart';
-import 'package:movie_app/tabs/main_page/main_page.dart';
-import 'package:movie_app/tabs/main_page/movie_details_screen.dart';
+import 'package:movie_app/movies/veiw/tabs/main_page/movie_details_screen.dart';
 
 void main() {
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       routes: {
         SplashScreen.routeName: (_) => const SplashScreen(),
         HomeScreen.routeName: (_) => const HomeScreen(),
-        MainPageTab.routeName: (_) => const MainPageTab(),
+      MainPageTab.routeName: (_) => const MainPageTab(),
+      
        MovieDetailsScreen.routeName:(_)=>const MovieDetailsScreen()
       },
       
