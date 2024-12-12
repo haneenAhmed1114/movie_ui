@@ -1,50 +1,69 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/api/api_servcies.dart';
-import 'package:movie_app/common/widgets/custom_error_widget.dart';
-import 'package:movie_app/common/widgets/custom_loading_widget.dart';
-import 'package:movie_app/movies/data/movie_list_veiw.dart';
-import 'package:movie_app/movies/model_view/Movie_Thumb_Model.dart';
+import 'package:movie_app/api/api_const.dart';
 import 'package:movie_app/movies/model_view/popular_movies_model.dart';
+import 'package:movie_app/movies/veiw/tabs/main_page/movie_details_screen.dart';
 
 class PopularMoviesList extends StatefulWidget {
-  const PopularMoviesList({super.key, });
-
+  const PopularMoviesList({
+    super.key,
+    this.results,
+  });
+  final Results? results;
 
   @override
   State<PopularMoviesList> createState() => _PopularMoviesListState();
 }
 
 class _PopularMoviesListState extends State<PopularMoviesList> {
-  
-  // var future;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   future=ApiServices.getPopularMovies();
-  //   print(future);
-  // }
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<PopularMoviesModel>(future: ApiServices.getPopularMovies(), builder: (context, snapshot) {
-                
-                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CustomLoadingWidget();
-                 }
-                 else if (snapshot.hasError) {
-                    return  CustomErrorWidget(errorMessage: snapshot.error.toString());
-                  }
-                else  if(snapshot.hasData){
-               PopularMoviesModel? popularMoviesModel=snapshot.data;
-               print('dddddd${snapshot.data}');
-               List<Results>movies=popularMoviesModel?.results??[];
-                    return MovieListVeiw(movie: movies) ;
-                  }
-                  return  Container();
-                  
-    }
-  
+    return Stack(
+      children: [
+        Image.network(
+          ApiConsts.imageUrl + widget.results!.posterPath!,
+          height: 250,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+        Positioned(
+          bottom: 20,
+          left: 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.results?.title ?? '',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                widget.results?.releaseDate ?? '',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 80,
+          left: MediaQuery.of(context).size.width / 2 - 30,
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(MovieDetailsScreen.routeName);
+            },
+            icon: const Icon(
+              Icons.play_circle_fill,
+              color: Colors.white,
+              size: 60,
+            ),
+          ),
+        ),
+      ],
     );
-   
-                  }
   }
+}

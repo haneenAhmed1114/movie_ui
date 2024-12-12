@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
-
-import 'package:movie_app/movies/model_view/popular_movies_model.dart';
 import 'package:movie_app/movies/veiw/tabs/browse_tab/browse_tab.dart';
 import 'package:movie_app/movies/veiw/tabs/main_page/main_page.dart';
 import 'package:movie_app/movies/veiw/tabs/search_tab/search_tab.dart';
 import 'package:movie_app/movies/veiw/tabs/watchlist_tab/watchlist_tab.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String routeName ='homeScreen';
+  static const String routeName = 'homeScreen';
 
-  const HomeScreen({super.key, });
-   
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-  
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  int currentIndex = 0 ;
+  int currentIndex = 0;
   List<Widget> tabs = [
     const MainPageTab(),
-   const SearchTab(),
+    const SearchTab(),
     BrowseTab(),
-  const  WatchlistTab(),
-
+    const WatchlistTab(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -33,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: tabs[currentIndex],
-      
+
         // Bottom Navigation Bar
         bottomNavigationBar: Theme(
           data: ThemeData(canvasColor: Colors.black),
@@ -41,10 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
             unselectedItemColor: Colors.white70,
             selectedItemColor: Colors.amber,
             showUnselectedLabels: true,
-            currentIndex: currentIndex ,
+            currentIndex: currentIndex,
             onTap: (value) {
               setState(() {
-                currentIndex = value ;
+                currentIndex = value;
               });
             },
             items: const [
@@ -71,4 +67,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
