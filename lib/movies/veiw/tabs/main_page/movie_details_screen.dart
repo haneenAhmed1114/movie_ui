@@ -1,99 +1,105 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/common/app_assets.dart';
-
+import 'package:movie_app/api/api_servcies.dart';
+import 'package:movie_app/common/widgets/custom_error_widget.dart';
+import 'package:movie_app/common/widgets/custom_loading_widget.dart';
+import 'package:movie_app/firebase/firebase_services.dart';
+import 'package:movie_app/movies/data/movies_details_veiw.dart';
+import 'package:movie_app/movies/data/recommended_movies_list.dart';
+import 'package:movie_app/movies/model_view/movies_details_model.dart';
+import 'package:movie_app/movies/model_view/movies_model.dart';
+import 'package:movie_app/movies/model_view/movies_model_firebase.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
-  static const String routeName ='movieDetailsScreen';
+  static const String routeName = 'movieDetailsScreen';
 
   const MovieDetailsScreen({super.key});
+
+  //final MoviesModelFirebase? moviesModelFirebase;
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: const Text('Movie Details',style: TextStyle(color: Colors.white),),
-        ),
-        backgroundColor: Colors.black,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  Image.asset(
-                    AppAssets.mainMovieImage,
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ],
-              ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Dora and the Lost City of Gold',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '2019 | PG | 1h 42m',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Having spent most of her life exploring the jungle, nothing could prepare Dora for the most dangerous adventure yet — high school.',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Cast',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Isabela Moner, Eugenio Derbez, Michael Peña',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Rating',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 20),
-                        SizedBox(width: 4),
-                        Text(
-                          '7.7',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
+     MoviesModelFirebase? movieModel =
+        ModalRoute.of(context)!.settings.arguments as MoviesModelFirebase;
+    return ListView(
+      children: [
+        FutureBuilder(
+            future: ApiServices.getDetalisMovies(
+                movieModel.results.id.toString()),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CustomLoadingWidget();
+              } else if (snapshot.hasError) {
+                return CustomErrorWidget(
+                    errorMessage: snapshot.error.toString());
+              } else if (snapshot.hasData) {
+                MoviesDetailsModel moviesDetailsModel = snapshot.data!;
+                return MovieDetailsVeiw(detailsModel: moviesDetailsModel);
+              } else {
+                return const Center(child: Text("No data available"));
+              }
+            }),
+             SizedBox(
+            height: MediaQuery.of(context).size.height * 0.05,
           ),
-        ),
-      ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            color: Colors.grey,
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.02,
+                bottom: MediaQuery.of(context).size.height * 0.02,
+                right: 10,
+                left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    'More like this',
+                    style: TextStyle(color: Colors.white,fontSize: 20),
+                  ),
+                ),
+                FutureBuilder(
+                    future: ApiServices.similarMovie(
+                        movieModel.results.id.toString()),
+                    builder: (context, snapshot) {
+                      MoviesModel? moreLike = snapshot.data;
+                      List<Results> movies = moreLike?.results ?? [];
+                      return Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (_, index) {
+                            return FutureBuilder<bool>(
+                              future: FirebaseServices.existMovie(
+                                  movies[index].id.toString()),
+                              builder: (BuildContext context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CustomLoadingWidget();
+                                } else if (snapshot.hasError) {
+                                  return CustomErrorWidget(errorMessage: snapshot.error.toString());
+                                } else if (snapshot.hasData) {
+                                  MoviesModelFirebase movie =
+                                      MoviesModelFirebase(results: movies[index]);
+                                  movie.isWatchList = snapshot.data!;
+                                  return RecommendedMoviesList(
+                                    results: movieModel,
+                                  );
+                                } else {
+                                  return const Center(
+                                      child: Text("No data available"));
+                                }
+                              },
+                            );
+                          },
+                          itemCount: movies.length,
+                        ),
+                      );
+                    })
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

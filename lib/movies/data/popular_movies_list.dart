@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/api/api_const.dart';
-import 'package:movie_app/movies/model_view/popular_movies_model.dart';
+import 'package:movie_app/movies/model_view/movies_model.dart';
+import 'package:movie_app/movies/model_view/movies_model_firebase.dart';
 import 'package:movie_app/movies/veiw/tabs/main_page/movie_details_screen.dart';
 
 class PopularMoviesList extends StatefulWidget {
   const PopularMoviesList({
     super.key,
-    this.results,
+    this.results, this.modelFirebase,
   });
   final Results? results;
+ final MoviesModelFirebase ?modelFirebase;
 
   @override
   State<PopularMoviesList> createState() => _PopularMoviesListState();
@@ -20,19 +22,37 @@ class _PopularMoviesListState extends State<PopularMoviesList> {
     return Stack(
       children: [
         Image.network(
-          ApiConsts.imageUrl + widget.results!.posterPath!,
-          height: 250,
-          width: double.infinity,
-          fit: BoxFit.cover,
-        ),
+              ApiConsts.imageUrl + widget.results!.backdropPath!,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+            height: MediaQuery.of(context).size.height * 0.38,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.bottomLeft,
+                    width: MediaQuery.of(context).size.width * 0.35,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white,
+                        image: DecorationImage(
+                            image: NetworkImage(ApiConsts.imageUrl +
+                                widget.results!.posterPath!),
+                            fit: BoxFit.fill)),
+                              ),]
+                ),
+            ),
         Positioned(
-          bottom: 20,
-          left: 20,
+          bottom: MediaQuery.of(context).size.width * 0.01,
+          left: MediaQuery.of(context).size.height * 0.25,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.results?.title ?? '',
+                widget.results?.originalTitle ?? '',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -50,16 +70,17 @@ class _PopularMoviesListState extends State<PopularMoviesList> {
           ),
         ),
         Positioned(
-          top: 80,
-          left: MediaQuery.of(context).size.width / 2 - 30,
+
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(MovieDetailsScreen.routeName);
+              Navigator.of(context).pushNamed(MovieDetailsScreen.routeName,arguments:  widget.modelFirebase);
             },
-            icon: const Icon(
-              Icons.play_circle_fill,
-              color: Colors.white,
-              size: 60,
+            icon:const Center(
+              child:  Icon(
+                Icons.play_circle_fill,
+                color: Colors.white,
+                size: 60,
+              ),
             ),
           ),
         ),

@@ -1,82 +1,124 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/api/api_const.dart';
+import 'package:movie_app/common/app_assets.dart';
+import 'package:movie_app/common/app_colors.dart';
+import 'package:movie_app/movies/model_view/movies_model_firebase.dart';
 
-class CustomWatchCard extends StatelessWidget {
-  const CustomWatchCard({super.key, required this.assetName, required this.title, required this.year, required this.cast});
-  final String assetName;
-  final String title;
-  final String year;
-  final String cast;
+import 'package:movie_app/provider/movie_provider.dart';
+
+import 'package:provider/provider.dart';
+
+class WatchCard extends StatefulWidget {
+  const WatchCard({super.key, required this.movieModel});
+  final MoviesModelFirebase? movieModel;
 
   @override
+  State<WatchCard> createState() => _WatchCardState();
+}
+
+class _WatchCardState extends State<WatchCard> {
+  @override
   Widget build(BuildContext context) {
-    return  Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-            child: Row(
-              children: [
-                Stack(
+    final results = widget.movieModel?.results;
+    final String yearDate =
+        results!.releaseDate != null && results.releaseDate!.length >= 4
+            ? results.releaseDate!.substring(0, 4)
+            : "N/A";
+    final String backdropPath = results.backdropPath ?? '';
+    final String originalTitle = results.originalTitle ?? 'No Title';
+    final String voteAverage = results.voteAverage?.toStringAsFixed(1) ?? 'N/A';
+
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        width: double.infinity,
+        height: 100,
+        color: Colors.black,
+        child: Row(
+          children: [
+            Container(
+              alignment: Alignment.topLeft,
+              width: MediaQuery.of(context).size.width * 0.4,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                color: Colors.white,
+                image: backdropPath.isNotEmpty
+                    ? DecorationImage(
+                        image: NetworkImage(ApiConsts.imageUrl + backdropPath),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: GestureDetector(
+                onTap: () async {
+                  setState(() {
+                    widget.movieModel!.isWatchList =
+                        !widget.movieModel!.isWatchList;
+                  });
+
+                  final updatedMovie = widget.movieModel!.copyWith(
+                    results: widget.movieModel?.results,
+                    isWatchList: widget.movieModel!.isWatchList,
+                  );
+
+                  if (updatedMovie.isWatchList) {
+                    Provider.of<MovieProvider>(context, listen: false)
+                        .addMovie(updatedMovie);
+                  } else {
+                    Provider.of<MovieProvider>(context, listen: false)
+                        .deleteMovie(updatedMovie);
+                  }
+                },
+                child: widget.movieModel!.isWatchList
+                    ? Image.asset(AppAssets.bookMark)
+                    : Image.asset(AppAssets.notBookMark),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      height: 100,
-                      width: 70,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(assetName),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                    Text(
+                      originalTitle,
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    // Positioned(
-                    //   top: 4,
-                    //   left: 4,
-                    //   child: Container(
-                    //     decoration: const BoxDecoration(
-                    //       color: Colors.amber,
-                    //       shape: BoxShape.circle,
-                    //     ),
-                    //     child: const Icon(
-                    //       Icons.check,
-                    //       size: 16,
-                    //       color: Colors.black,
-                    //     ),
-                    //   ),
-                    // ),
+                    Text(
+                      yearDate,
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: AppColors.goldenColor,
+                          size: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Text(
+                            voteAverage,
+                            style: const TextStyle(
+                                color: AppColors.goldenColor, fontSize: 15),
+                          ),
+                        )
+                      ],
+                    )
                   ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                       title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                       year,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                       cast,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ]
+              ),
             )
+          ],
+        ),
+      ),
     );
   }
 }

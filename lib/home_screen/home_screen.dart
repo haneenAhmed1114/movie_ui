@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/common/app_colors.dart';
 import 'package:movie_app/movies/veiw/tabs/browse_tab/browse_tab.dart';
 import 'package:movie_app/movies/veiw/tabs/main_page/main_page.dart';
 import 'package:movie_app/movies/veiw/tabs/search_tab/search_tab.dart';
+import 'package:movie_app/movies/veiw/tabs/setting_tab/setting_tab.dart';
 import 'package:movie_app/movies/veiw/tabs/watchlist_tab/watchlist_tab.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,8 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> tabs = [
     const MainPageTab(),
     const SearchTab(),
-    BrowseTab(),
+   const BrowseTab(),
     const WatchlistTab(),
+    const SettingTab()
   ];
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           data: ThemeData(canvasColor: Colors.black),
           child: BottomNavigationBar(
             unselectedItemColor: Colors.white70,
-            selectedItemColor: Colors.amber,
+            selectedItemColor: AppColors.goldenColor,
             showUnselectedLabels: true,
             currentIndex: currentIndex,
             onTap: (value) {
@@ -60,6 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(Icons.bookmark),
                 label: "WatchList",
               ),
+               BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: "settings",
+              ),
+              
             ],
           ),
         ),

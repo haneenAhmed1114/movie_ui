@@ -1,72 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/common/app_assets.dart';
+import 'package:movie_app/api/api_servcies.dart';
+import 'package:movie_app/movies/model_view/browse_name_model.dart';
+import 'package:movie_app/movies/veiw/tabs/browse_tab/browse_card.dart';
+import 'package:movie_app/movies/veiw/tabs/browse_tab/genre_browse_screen.dart';
+
 
 class BrowseTab extends StatelessWidget {
-  final List<String> categories = [
-    'Action',
-    'Drama',
-    'Comedy',
-    'Thriller',
-    'Horror',
-    'Sci-Fi',
-    'Romance',
-    'Adventure'
-  ];
-
-   BrowseTab({super.key});
+  const BrowseTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Browse Category',style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.black,
-      ),
-      backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 30,
-            mainAxisSpacing: 30,
-            childAspectRatio: 16/ 9,
+    return Container(
+      padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height * 0.06, right: 20, left: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        const  Text(
+            'Browse Screen',
+            style: TextStyle(color: Colors.white,fontSize: 20),
           ),
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    image: const DecorationImage(
-                      image: AssetImage(AppAssets.sImage),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
+          FutureBuilder(
+              future: ApiServices.getBrowseNameMovies(),
+              builder: (context, snapshot) {
+                BrowseNameModel? topRatedMovie = snapshot.data;
+                List<Genres> genres = topRatedMovie?.genres ?? [];
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 20,
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 3),
+                        ),
+                        itemCount: genres.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                  GenreBrowseScreen.routeName,
+                                  arguments: genres[index]);
+                            },
+                            child: BrowseCard(
+                              title: genres[index].name,
+                            ),
+                          );
+                        }),
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                const Center(
-                  child: Text(
-                    'Action',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+                );
+              })
+        ],
       ),
     );
   }
 }
-
