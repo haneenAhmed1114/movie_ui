@@ -7,23 +7,28 @@ class SearchTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: const Text("Search Movies",style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.black,
-      ),
-      body: Center(
-        child: ElevatedButton(
-          style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(AppColors.goldenColor)),
-          onPressed: () {
-            showSearch(
-              context: context,
-              delegate: SearchScreenView(),
-            );
-          },
-          child: const Text("Search Movies",style: TextStyle(color: Colors.black),),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,        
+        body: Column(children: [
+           const Padding(
+             padding: EdgeInsets.all(10.0),
+             child: Text("Search Movies",style: TextStyle(color: Colors.white,fontSize: 20),),
+           ),
+             Center(
+          child: ElevatedButton(
+            style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(AppColors.goldenColor)),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: SearchScreenView(),
+              );
+            },
+            child: const Text("Search Movies",style: TextStyle(color: Colors.black),),
+          ),
         ),
+        ],)
+      
       ),
     );
   }

@@ -10,50 +10,49 @@ class BrowseTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height * 0.06, right: 20, left: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        const  Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+     const Padding(
+        padding:  EdgeInsets.all(10.0),
+        child:   Text(
             'Browse Screen',
             style: TextStyle(color: Colors.white,fontSize: 20),
           ),
-          FutureBuilder(
-              future: ApiServices.getBrowseNameMovies(),
-              builder: (context, snapshot) {
-                BrowseNameModel? topRatedMovie = snapshot.data;
-                List<Genres> genres = topRatedMovie?.genres ?? [];
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 3),
-                        ),
-                        itemCount: genres.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                  GenreBrowseScreen.routeName,
-                                  arguments: genres[index]);
-                            },
-                            child: BrowseCard(
-                              title: genres[index].name,
-                            ),
-                          );
-                        }),
-                  ),
-                );
-              })
-        ],
       ),
+        FutureBuilder(
+            future: ApiServices.getBrowseNameMovies(),
+            builder: (context, snapshot) {
+              BrowseNameModel? topRatedMovie = snapshot.data;
+              List<Genres> genres = topRatedMovie?.genres ?? [];
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
+                        childAspectRatio: MediaQuery.of(context).size.width /
+                            (MediaQuery.of(context).size.height / 3),
+                      ),
+                      itemCount: genres.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                GenreBrowseScreen.routeName,
+                                arguments: genres[index]);
+                          },
+                          child: BrowseCard(
+                            title: genres[index].name,
+                          ),
+                        );
+                      }),
+                ),
+              );
+            })
+      ],
     );
   }
 }

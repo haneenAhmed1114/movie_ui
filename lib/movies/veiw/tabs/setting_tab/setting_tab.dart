@@ -12,18 +12,22 @@ class SettingTab extends StatefulWidget {
 class _SettingTabState extends State<SettingTab> {
   @override
   Widget build(BuildContext context) {
-    return  Row(
+    return  Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-     const  Padding(
-          padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-          child: Text('Log Out',style: TextStyle(color: Colors.white,fontSize: 20),),
-        ),
-         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: GestureDetector(
-              onTap:  ()=>Navigator.popAndPushNamed(context,Login.routeName),
-              child: const Icon(Icons.logout,color: Colors.white)),
+         const Padding(
+             padding: EdgeInsets.all(10.0),
+             child: Text("Settings",style: TextStyle(color: Colors.white,fontSize: 20),),
+           ),
+           ListTile(
+           onTap:  ()=>Navigator.popAndPushNamed(context,Login.routeName),
+            title: const Text(
+              'Log out',
+             style: TextStyle(color: Colors.white,fontSize: 20)
+            ),
+            trailing: const Icon(Icons.logout,size: 30,color: Colors.white,),
           )
+
       ],
     );
   }

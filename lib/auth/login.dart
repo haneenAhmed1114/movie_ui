@@ -31,65 +31,67 @@ class _LoginState extends State<Login> {
         padding: const EdgeInsets.all(10),
       child: Form(
         key: formKey,
-        child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*.1),
-            child:  Image.asset(AppAssets.splashIcon),
-          ),
-          CustomTextFormFaild(controller: emailController,hintText: 'enter your email ',
-          keyboardType: TextInputType.emailAddress,
-          validator: (p0) {
-            if(p0 ==null||p0.isEmpty){
-              return 'Valid email';
-            }
-            return null;
-          },
-          ),
-           CustomTextFormFaild(controller: passwordController,hintText: 'enter your pass ',
-          keyboardType: TextInputType.visiblePassword,
-          password: true,
-          validator: (p0) {
-            if(p0 ==null||p0.isEmpty||p0.length<=7){
-              return 'Valid password';
-            }
-            return null;
-          },
-          ),
-            const SizedBox(
-                  height: 10,
-                ),
-                Column(children: [
-                  Provider.of<UserProvider>(context).loading?const CustomLoadingWidget():
-                  CustomButton(onPressed: () async {
-                    if(formKey.currentState!.validate()){
-                  await Provider.of<UserProvider>(context,listen: false).login(emailController.text, passwordController.text);
-                    if(Provider.of<UserProvider>(context,
-                                        listen: false)
-                                    .islogin){
-                                      Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-
-                                    }
-                    }
-                  
-                  
-                }, text: 'Login'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                     const Text("Don't Have an account ?",style: TextStyle(color: AppColors.goldenColor),),
-                    TextButton(onPressed: () {
-                      Navigator.of(context).pushReplacementNamed(SignUp.routeName);
-                    }
-                    , child: const Text('Register',style: TextStyle(color:  AppColors.goldenColor),))
-                  ],
-                )
-                ],)
-                
+        child: SingleChildScrollView(
+          child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*.1),
+              child:  Image.asset(AppAssets.splashIcon),
+            ),
+            CustomTextFormFaild(controller: emailController,hintText: 'enter your email ',
+            keyboardType: TextInputType.emailAddress,
+            validator: (p0) {
+              if(p0 ==null||p0.isEmpty){
+                return 'Valid email';
+              }
+              return null;
+            },
+            ),
+             CustomTextFormFaild(controller: passwordController,hintText: 'enter your pass ',
+            keyboardType: TextInputType.visiblePassword,
+            password: true,
+            validator: (p0) {
+              if(p0 ==null||p0.isEmpty||p0.length<=7){
+                return 'Valid password';
+              }
+              return null;
+            },
+            ),
+              const SizedBox(
+                    height: 10,
+                  ),
+                  Column(children: [
+                    Provider.of<UserProvider>(context).loading?const CustomLoadingWidget():
+                    CustomButton(onPressed: () async {
+                      if(formKey.currentState!.validate()){
+                    await Provider.of<UserProvider>(context,listen: false).login(emailController.text, passwordController.text);
+                      if(Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .islogin){
+                                        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
           
-        ],
-      ),),
+                                      }
+                      }
+                    
+                    
+                  }, text: 'Login'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                       const Text("Don't Have an account ?",style: TextStyle(color: AppColors.goldenColor),),
+                      TextButton(onPressed: () {
+                        Navigator.of(context).pushReplacementNamed(SignUp.routeName);
+                      }
+                      , child: const Text('Register',style: TextStyle(color:  AppColors.goldenColor),))
+                    ],
+                  )
+                  ],)
+                  
+            
+          ],
+                ),
+        ),),
       ),
     ) ;
   }

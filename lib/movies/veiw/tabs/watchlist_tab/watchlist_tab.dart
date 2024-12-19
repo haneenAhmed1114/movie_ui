@@ -15,54 +15,53 @@ class WatchlistTab extends StatefulWidget {
 class _WatchlistTabState extends State<WatchlistTab> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height * 0.06, right: 20, left: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+       const Padding(
+          padding:  EdgeInsets.all(10.0),
+          child:  Text(
             'Watch List',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white,fontSize: 20),
           ),
-          StreamBuilder<List<MoviesModelFirebase>?>(
-              stream: Provider.of<MovieProvider>(context, listen: false)
-                  .getMovies(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+        ),
+        StreamBuilder<List<MoviesModelFirebase>?>(
+            stream: Provider.of<MovieProvider>(context, listen: false)
+                .getMovies(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Expanded(
+                  child: CustomLoadingWidget(),
+                );
+              } else {
+                var data = snapshot.data;
+    
+                if (data == null || data.isEmpty) {
                   return const Expanded(
-                    child: CustomLoadingWidget(),
-                  );
-                } else {
-                  var data = snapshot.data;
-
-                  if (data == null || data.isEmpty) {
-                    return const Expanded(
-                      child: Center(
-                        child: Text(
-                         ' No Watch List',
-                          style: TextStyle(color: Colors.white)
-                        ),
+                    child: Center(
+                      child: Text(
+                       ' No Watch List',
+                        style: TextStyle(color: Colors.white)
                       ),
-                    );
-                  }
-                  return Expanded(
-                    child: ListView.separated(
-                      itemBuilder: (_, index) {
-                        return WatchCard(
-                          movieModel: data[index],
-                        );
-                      },
-                      itemCount: data.length,
-                      separatorBuilder: (_, index) {
-                        return const Divider();
-                      },
                     ),
                   );
                 }
-              })
-        ],
-      ),
+                return Expanded(
+                  child: ListView.separated(
+                    itemBuilder: (_, index) {
+                      return WatchCard(
+                        movieModel: data[index],
+                      );
+                    },
+                    itemCount: data.length,
+                    separatorBuilder: (_, index) {
+                      return const Divider();
+                    },
+                  ),
+                );
+              }
+            })
+      ],
     );
   }
 }
